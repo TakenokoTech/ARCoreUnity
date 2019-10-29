@@ -11,6 +11,7 @@
         private List<AugmentedFace> m_AugmentedFaceList = null;
 
         // Keep previous frame's mesh polygon to avoid mesh update every frame.
+        public Pose m_CenterPose = new Pose();
         public readonly List<Vector3> m_MeshVertices = new List<Vector3>();
         public readonly List<Vector3> m_MeshNormals = new List<Vector3>();
         private List<Vector2> m_MeshUVs = new List<Vector2>();
@@ -55,6 +56,7 @@
         }
 
         private void _UpdateMesh() {
+            m_CenterPose = m_AugmentedFace.CenterPose;
             m_AugmentedFace.GetVertices(m_MeshVertices);
             m_AugmentedFace.GetNormals(m_MeshNormals);
 

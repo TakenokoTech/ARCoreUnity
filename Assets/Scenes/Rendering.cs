@@ -36,15 +36,6 @@
         private void _UpdateBall() {
             Debug.Log("_UpdateBall");
 
-            /*
-            obj = Instantiate(pointObj) as GameObject;
-            obj.name = name;
-            obj.transform.localPosition = new Vector3(0, 0, 0);
-            obj.transform.localScale = new Vector3(scale, scale, scale);
-            obj.transform.parent = gameObject.transform;
-            obj.layer = gameObject.layer;
-            */
-
             for (int i = 0; i < filter.m_MeshVertices.Count; i++) {
                 string name = "m_BallDicVertices-" + i;
                 if (!m_BallDicVertices.ContainsKey(name)) {
@@ -58,14 +49,21 @@
                 m_BallDicVertices[name].transform.localScale = new Vector3(scale, scale, scale);
                 m_BallDicVertices[name].transform.parent = gameObject.transform;
                 m_BallDicVertices[name].layer = gameObject.layer;
+            }
 
-                if (i == 0) {
-                    Vector3 vec = m_BallDicVertices[name].transform.TransformPoint(m_BallDicVertices[name].transform.localPosition);
-                    targetHead.transform.position = new Vector3(vec.x, vec.y, vec.z);
-                    targetCenter.transform.position = new Vector3(vec.x, vec.y - 1.3F, vec.z);
-                    targetLeft.transform.position = new Vector3(vec.x + 0.5F, vec.y - 0.7F, vec.z);
-                    targetRight.transform.position = new Vector3(vec.x - 0.5F, vec.y - 0.7F, vec.z);
-                }
+            if (filter.m_MeshVertices.Count > 1) {
+                float offsetZ = 0; //0.3F;
+                string name = "m_BallDicVertices-" + 1;
+                Vector3 vec = filter.m_CenterPose.position;
+                Vector3 dir = filter.m_CenterPose.forward;
+                // Vector3 vec = m_BallDicVertices[name].transform.TransformPoint(m_BallDicVertices[name].transform.position);
+                // Vector3 dir = m_BallDicVertices[name].transform.TransformDirection(m_BallDicVertices[name].transform.forward);
+                //targetCenter.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                //targetHead.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                //targetHead.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                //targetLeft.transform.position = new Vector3(vec.x + 0.5F, vec.y - 0.7F, vec.z + offsetZ);
+                //targetRight.transform.position = new Vector3(vec.x - 0.5F, vec.y - 0.7F, vec.z + offsetZ);
             }
 
             for (int i = 0; i < filter.m_MeshNormals.Count; i++) {
