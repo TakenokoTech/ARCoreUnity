@@ -19,6 +19,8 @@
         public GameObject targetRight;
         public GameObject targetCenter;
 
+        public GameObject targetLook;
+
         public void Awake() {
             filter = GetComponent<ARCoreAugmentedFaceMeshFilter>();
         }
@@ -34,8 +36,6 @@
 
         GameObject obj;
         private void _UpdateBall() {
-            Debug.Log("_UpdateBall");
-
             for (int i = 0; i < filter.m_MeshVertices.Count; i++) {
                 string name = "m_BallDicVertices-" + i;
                 if (!m_BallDicVertices.ContainsKey(name)) {
@@ -59,11 +59,13 @@
                 // Vector3 vec = m_BallDicVertices[name].transform.TransformPoint(m_BallDicVertices[name].transform.position);
                 // Vector3 dir = m_BallDicVertices[name].transform.TransformDirection(m_BallDicVertices[name].transform.forward);
                 //targetCenter.transform.position = new Vector3(vec.x, vec.y, vec.z);
-                targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
-                //targetHead.transform.position = new Vector3(vec.x, vec.y, vec.z);
-                //targetHead.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                //targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                targetHead.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                targetHead.transform.forward = new Vector3(-dir.x, -dir.y, -dir.z);
                 //targetLeft.transform.position = new Vector3(vec.x + 0.5F, vec.y - 0.7F, vec.z + offsetZ);
                 //targetRight.transform.position = new Vector3(vec.x - 0.5F, vec.y - 0.7F, vec.z + offsetZ);
+                targetLook.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                targetLook.transform.forward = new Vector3(dir.x, dir.y, dir.z);
             }
 
             for (int i = 0; i < filter.m_MeshNormals.Count; i++) {
