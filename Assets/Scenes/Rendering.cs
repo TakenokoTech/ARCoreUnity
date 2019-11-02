@@ -20,6 +20,7 @@
         public GameObject targetCenter;
 
         public GameObject targetLook;
+        public GameObject faceInclination;
 
         public void Awake() {
             filter = GetComponent<ARCoreAugmentedFaceMeshFilter>();
@@ -31,6 +32,7 @@
         }
 
         void Update() {
+            // Debug.Log("Update...");
             _UpdateBall();
         }
 
@@ -51,21 +53,21 @@
                 m_BallDicVertices[name].layer = gameObject.layer;
             }
 
-            if (filter.m_MeshVertices.Count > 1) {
-                float offsetZ = 0; //0.3F;
+            if (filter.m_MeshVertices.Count > 0) {
                 string name = "m_BallDicVertices-" + 1;
                 Vector3 vec = filter.m_CenterPose.position;
                 Vector3 dir = filter.m_CenterPose.forward;
-                // Vector3 vec = m_BallDicVertices[name].transform.TransformPoint(m_BallDicVertices[name].transform.position);
-                // Vector3 dir = m_BallDicVertices[name].transform.TransformDirection(m_BallDicVertices[name].transform.forward);
-                //targetCenter.transform.position = new Vector3(vec.x, vec.y, vec.z);
-                //targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
-                targetHead.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                Vector3 vecBall = m_BallDicVertices[name].transform.TransformPoint(m_BallDicVertices[name].transform.position);
+                Vector3 dirBall = m_BallDicVertices[name].transform.TransformDirection(m_BallDicVertices[name].transform.forward);
+                targetHead.transform.position = new Vector3(vec.x, vec.y - 0.1F, vec.z);
                 targetHead.transform.forward = new Vector3(-dir.x, -dir.y, -dir.z);
-                //targetLeft.transform.position = new Vector3(vec.x + 0.5F, vec.y - 0.7F, vec.z + offsetZ);
-                //targetRight.transform.position = new Vector3(vec.x - 0.5F, vec.y - 0.7F, vec.z + offsetZ);
+                targetHead.transform.Rotate(new Vector3(0, 0, -1), _GetFaceInclination());
                 targetLook.transform.position = new Vector3(vec.x, vec.y, vec.z);
                 targetLook.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                // targetCenter.transform.position = new Vector3(vec.x, vec.y, vec.z);
+                // targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+                targetLeft.transform.position = new Vector3(vec.x, vec.y - 1.5F, vec.z);
+                targetRight.transform.position = new Vector3(vec.x, vec.y - 1.5F, vec.z);
             }
 
             for (int i = 0; i < filter.m_MeshNormals.Count; i++) {
@@ -82,6 +84,25 @@
                 m_BallDicNormals[name].transform.parent = gameObject.transform;
                 m_BallDicNormals[name].layer = gameObject.layer;
             }
+        }
+
+        private float _GetFaceInclination() {
+            if (filter.m_MeshVertices.Count == 0) {
+                return 0;
+            }
+            string name1 = "m_BallDicVertices-" + 10;
+            Vector3 vecBall1 = m_BallDicVertices[name1].transform.TransformPoint(m_BallDicVertices[name1].transform.position);
+            Vector3 dirBall1 = m_BallDicVertices[name1].transform.TransformDirection(m_BallDicVertices[name1].transform.forward);
+            string name2 = "m_BallDicVertices-" + 152;
+            Vector3 vecBall2 = m_BallDicVertices[name2].transform.TransformPoint(m_BallDicVertices[name2].transform.position);
+            Vector3 dirBall2 = m_BallDicVertices[name2].transform.TransformDirection(m_BallDicVertices[name2].transform.forward);
+
+            float dx = vecBall1.x - vecBall2.x;
+            float dy = vecBall1.y - vecBall2.y;
+            float z = Mathf.Atan2(dy, dx) * Mathf.Rad2Deg - 90;
+            faceInclination.transform.rotation = Quaternion.Euler(0, 0, z);
+
+            return z;
         }
     }
 }
