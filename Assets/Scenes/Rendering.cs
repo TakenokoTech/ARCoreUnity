@@ -49,7 +49,7 @@
                 m_BallDicVertices[name].name = name;
                 m_BallDicVertices[name].transform.localPosition = filter.m_MeshVertices[i];
                 m_BallDicVertices[name].transform.localScale = new Vector3(scale, scale, scale);
-                m_BallDicVertices[name].transform.parent = gameObject.transform;
+                m_BallDicVertices[name].transform.parent = parent.transform;
                 m_BallDicVertices[name].layer = gameObject.layer;
             }
 
@@ -81,7 +81,7 @@
                 m_BallDicNormals[name].name = name;
                 m_BallDicNormals[name].transform.localPosition = filter.m_MeshNormals[i];
                 m_BallDicNormals[name].transform.localScale = new Vector3(scale, scale, scale);
-                m_BallDicNormals[name].transform.parent = gameObject.transform;
+                m_BallDicNormals[name].transform.parent = parent.transform;
                 m_BallDicNormals[name].layer = gameObject.layer;
             }
         }
