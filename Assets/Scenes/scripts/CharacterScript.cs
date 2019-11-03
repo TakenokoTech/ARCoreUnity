@@ -7,10 +7,19 @@ public class CharacterScript : MonoBehaviour {
     public GameObject head;
     public GameObject headTarget;
 
+    private VRMLookAtHead vrmLookAtHead;
+    private VRIK vrik;
+    private LookAtIK lookAtIk;
+    private Animator animator;
+
+
     void Start() {
-        VRMLookAtHead vrmLookAtHead = GetComponent<VRMLookAtHead>();
-        LookAtIK lookAtIk = GetComponent<LookAtIK>();
-        Animator animator = GetComponent<Animator>();
+        vrmLookAtHead = GetComponent<VRMLookAtHead>();
+        vrik = GetComponent<VRIK>();
+        lookAtIk = GetComponent<LookAtIK>();
+        animator = GetComponent<Animator>();
+
+        vrik.solver.OnPostUpdate += vrmLookAtHead.LookWorldPosition;
 
         lookAtIk.solver.OnPostUpdate += vrmLookAtHead.LookWorldPosition;
         lookAtIk.solver.OnPostUpdate += this.Move;
