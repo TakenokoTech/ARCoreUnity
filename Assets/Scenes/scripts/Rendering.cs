@@ -16,11 +16,11 @@
 
         public GameObject parent;
         public GameObject targetHead;
-        public GameObject targetLeft;
-        public GameObject targetRight;
+        public GameObject targetLeftArm;
+        public GameObject targetRightArm;
+        public GameObject targetLeftLeg;
+        public GameObject targetRightLeg;
         public GameObject targetCenter;
-
-        public GameObject targetLook;
         public GameObject faceInclination;
 
         public GameObject noSignal;
@@ -30,7 +30,7 @@
         }
 
         void Update() {
-            AppLog.Info("Rendering.Update()");
+            // AppLog.Info("Rendering.Update()"); -10, 180, -60
             try {
                 _UpdateMeshVerticesBall();
                 _UpdateMeshNormalsBall();
@@ -44,19 +44,23 @@
         private void _CalcFacePosition() {
             Vector3 vec = filter.m_CenterPose.position;
             Vector3 dir = filter.m_CenterPose.forward;
+            //vec = new Vector3(0.0F, 0.1F, 0.4F);
+            //dir = new Vector3(-0.1F, -0.0F, 0.9F);
 
-            Debug.Log(filter.m_CenterPose.position.ToString());
             noSignal.SetActive(vec.x == 0 && vec.y == 0 && vec.z == 0);
+            AppLog.Info(vec.ToString() + dir.ToString());
 
             targetHead.transform.position = new Vector3(vec.x, vec.y - 0.1F, vec.z);
             targetHead.transform.forward = new Vector3(-dir.x, -dir.y, -dir.z);
             targetHead.transform.Rotate(new Vector3(0, 0, -1), _GetFaceInclination());
-            targetLook.transform.position = new Vector3(vec.x, vec.y, vec.z);
-            targetLook.transform.forward = new Vector3(dir.x, dir.y, dir.z);
+
+            targetLeftArm.transform.position = new Vector3(vec.x + 0.35F, vec.y - 0.8F, vec.z - 0.1F);
+            targetRightArm.transform.position = new Vector3(vec.x - 0.35F, vec.y - 0.8F, vec.z - 0.1F);
+            targetLeftLeg.transform.position = new Vector3(vec.x + 0.2F, vec.y - 1.5F, vec.z);
+            targetRightLeg.transform.position = new Vector3(vec.x - 0.2F, vec.y - 1.5F, vec.z);
+
             // targetCenter.transform.position = new Vector3(vec.x, vec.y, vec.z);
             // targetCenter.transform.forward = new Vector3(dir.x, dir.y, dir.z);
-            targetLeft.transform.position = new Vector3(vec.x, vec.y - 1.5F, vec.z);
-            targetRight.transform.position = new Vector3(vec.x, vec.y - 1.5F, vec.z);
         }
 
         /**

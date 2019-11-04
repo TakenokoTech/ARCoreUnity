@@ -5,5 +5,6 @@ public sealed class AppLog : MonoBehaviour {
 
     public static void Info(string msg) {
         AppLog.ajc.CallStatic<int>("i", "ARCoreUnity", msg);
+        Debug.Log("AppLog: " + msg);
     }
 }
