@@ -2225,6 +2225,27 @@ MonoBehaviour:
       onRightFootstep:
         m_PersistentCalls:
           m_Calls: []
+--- !u!114 &1125737634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1125737625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2913b16bf4650614bb50556e1e8609cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsActive: 1
+  ModulateRatio: 1
+  blinkParameters:
+    ratioHalf: 0.3
+    ratioClose: 0.9
+    closeDuration: 0.1
+    openDuration: 0.2
+    interval: 3
+    randomThreshold: 0.3
 --- !u!114 &1125737636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2586,7 +2607,7 @@ Transform:
   m_GameObject: {fileID: 1274701743}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: -1.3, z: 0.2}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_Children:
   - {fileID: 1125737603}
   - {fileID: 1070975007}
@@ -2858,6 +2879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointObj: {fileID: 3024349793816349920, guid: 5de2f058595c1454c94de3fd6d7afa46,
     type: 3}
+  character: {fileID: 1125737625}
   parent: {fileID: 223974226}
   targetHead: {fileID: 633987594}
   targetLeftArm: {fileID: 885169475}

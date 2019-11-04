@@ -2,6 +2,7 @@
     using System;
     using System.Collections.Generic;
     using UnityEngine;
+    using VRM;
 
     public class Rendering : MonoBehaviour {
 
@@ -13,6 +14,7 @@
         private Dictionary<string, GameObject> m_BallDicNormals = new Dictionary<string, GameObject>();
 
         public GameObject pointObj;
+        public GameObject character;
 
         public GameObject parent;
         public GameObject targetHead;
@@ -25,8 +27,14 @@
 
         public GameObject noSignal;
 
+        private CharacterEntity entity = new CharacterEntity();
+
+        const string PREFIX_VER = "m_BallDicVertices-";
+        const string PREFIX_DIC = "m_BallDicNormals-";
+
         void Start() {
             filter = GetComponent<ARCoreAugmentedFaceMeshFilter>();
+            entity.blendShapeProxy = character.GetComponent<VRMBlendShapeProxy>();
         }
 
         void Update() {
@@ -35,6 +43,7 @@
                 _UpdateMeshVerticesBall();
                 _UpdateMeshNormalsBall();
                 _CalcFacePosition();
+                _CalcMouthPosition();
             }
             catch (Exception e) {
                 AppLog.Info(e.ToString());
@@ -48,7 +57,7 @@
             //dir = new Vector3(-0.1F, -0.0F, 0.9F);
 
             noSignal.SetActive(vec.x == 0 && vec.y == 0 && vec.z == 0);
-            AppLog.Info(vec.ToString() + dir.ToString());
+            // zAppLog.Info(vec.ToString() + dir.ToString());
 
             targetHead.transform.position = new Vector3(vec.x, vec.y - 0.1F, vec.z);
             targetHead.transform.forward = new Vector3(-dir.x, -dir.y, -dir.z);
@@ -69,10 +78,10 @@
         private float _GetFaceInclination() {
             if (filter.m_MeshVertices.Count == 0) return 0;
 
-            string name1 = "m_BallDicVertices-" + 10;
+            string name1 = PREFIX_VER + 10;
             Vector3 vecBall1 = m_BallDicVertices[name1].transform.TransformPoint(m_BallDicVertices[name1].transform.position);
             Vector3 dirBall1 = m_BallDicVertices[name1].transform.TransformDirection(m_BallDicVertices[name1].transform.forward);
-            string name2 = "m_BallDicVertices-" + 152;
+            string name2 = PREFIX_VER + 152;
             Vector3 vecBall2 = m_BallDicVertices[name2].transform.TransformPoint(m_BallDicVertices[name2].transform.position);
             Vector3 dirBall2 = m_BallDicVertices[name2].transform.TransformDirection(m_BallDicVertices[name2].transform.forward);
 
@@ -85,11 +94,49 @@
         }
 
         /**
+         * 口の形を計算
+         */
+        private void _CalcMouthPosition() {
+            if (filter.m_MeshVertices.Count == 0) return;
+
+            float minV = 0.015F, maxV = 0.04F;
+            Vector3 vecTop = m_BallDicVertices[PREFIX_VER + 12].transform.position;
+            Vector3 vecBottom = m_BallDicVertices[PREFIX_VER + 14].transform.position;
+            float vertical = Vector3.Distance(vecTop, vecBottom);
+            float perV = (vertical - minV) / (maxV - minV);
+
+            float minH = 0.015F, maxH = 0.04F;
+            Vector3 vecLeft = m_BallDicVertices[PREFIX_VER + 308].transform.position;
+            Vector3 vecRight = m_BallDicVertices[PREFIX_VER + 78].transform.position;
+            float horizontal = Vector3.Distance(vecLeft, vecRight);
+            float a = horizontal - vertical;
+            float perH = 1 - ((a - minH) / (maxH - minH));
+            if (perV < 0.3 && perH < 0.3) {
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("A"), Math.Min(Math.Max(0.0F, perV), 1.0F));
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("I"), Math.Min(Math.Max(0.0F, (0.3F - perH) / 100F), 1.0F));
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("O"), 0.0F);
+            }
+            else if (perV > perH) {
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("A"), Math.Min(Math.Max(0.0F, perV), 1.0F));
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("I"), 0.0F);
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("O"), 0.0F);
+            }
+            else {
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("A"), 0.0F);
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("I"), 0.0F);
+                entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("O"), Math.Min(Math.Max(0.0F, perH), 1.0F));
+            }
+
+            AppLog.Info("perV: " + Math.Min(Math.Max(0.0F, perV), 1.0F));
+            AppLog.Info("perH: " + Math.Min(Math.Max(0.0F, perH), 1.0F));
+        }
+
+        /**
          * メッシュを配置
          */
         private void _UpdateMeshVerticesBall() {
             for (int i = 0; i < filter.m_MeshVertices.Count; i++) {
-                string name = "m_BallDicVertices-" + i;
+                string name = PREFIX_VER + i;
                 if (!m_BallDicVertices.ContainsKey(name)) {
                     m_BallDicVertices[name] = Instantiate(pointObj) as GameObject; //GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     m_BallDicVertices[name].GetComponent<PointTextScript>().text = i.ToString();
@@ -109,7 +156,7 @@
          */
         private void _UpdateMeshNormalsBall() {
             for (int i = 0; i < filter.m_MeshNormals.Count; i++) {
-                string name = "m_BallDicNormals-" + i;
+                string name = PREFIX_DIC + i;
                 if (!m_BallDicNormals.ContainsKey(name)) {
                     m_BallDicNormals[name] = Instantiate(pointObj) as GameObject; //GameObject.CreatePrimitive(PrimitiveType.Sphere);
                     m_BallDicNormals[name].GetComponent<PointTextScript>().text = i.ToString();
@@ -122,6 +169,10 @@
                 m_BallDicNormals[name].transform.parent = parent.transform;
                 m_BallDicNormals[name].layer = gameObject.layer;
             }
+        }
+
+        private class CharacterEntity {
+            public VRM.VRMBlendShapeProxy blendShapeProxy;
         }
     }
 }
