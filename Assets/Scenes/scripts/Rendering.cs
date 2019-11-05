@@ -127,8 +127,8 @@
                 entity.blendShapeProxy.ImmediatelySetValue(new BlendShapeKey("O"), Math.Min(Math.Max(0.0F, perH), 1.0F));
             }
 
-            AppLog.Info("perV: " + Math.Min(Math.Max(0.0F, perV), 1.0F));
-            AppLog.Info("perH: " + Math.Min(Math.Max(0.0F, perH), 1.0F));
+            // AppLog.Info("perV: " + Math.Min(Math.Max(0.0F, perV), 1.0F));
+            // AppLog.Info("perH: " + Math.Min(Math.Max(0.0F, perH), 1.0F));
         }
 
         /**
