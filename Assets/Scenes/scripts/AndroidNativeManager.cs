@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class AndroidNativeManager : MonoBehaviour {
     public static readonly string ANDROID_NATIVE_PLUGIN_CLASS = "tech.takenoko.arcoreunitylibrary.CameraWrapperKt";
+
+    public RawImage image;
 
     void Start() {
         AppLog.Info("AndroidNativeManager.Start()");
@@ -24,5 +27,9 @@ public class AndroidNativeManager : MonoBehaviour {
 
     public void CallbackMethod(string message) {
         AppLog.Info("CallbackMethod: " + message.Length);
+        byte[] bytes = System.Convert.FromBase64String(message);
+        var texture = new Texture2D(1, 1);
+        texture.LoadImage(bytes);
+        image.texture = texture;
     }
 }
