@@ -1,5 +1,6 @@
 ﻿namespace Takenoko.Tech.AugmentedFaces {
     using GoogleARCore;
+    using System;
     using System.Collections.Generic;
     using UnityEngine;
 
@@ -52,7 +53,10 @@
             transform.position = m_AugmentedFace.CenterPose.position;
             transform.rotation = m_AugmentedFace.CenterPose.rotation;
 
-            _UpdateMesh();
+            try {
+                _UpdateMesh();
+            }
+            catch (Exception e) { }
         }
 
         private void _UpdateMesh() {
