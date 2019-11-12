@@ -57,6 +57,7 @@
             //dir = new Vector3(-0.1F, -0.0F, 0.9F);
 
             noSignal.SetActive(vec.x == 0 && vec.y == 0 && vec.z == 0);
+            // noSignal.SetActive(false);
             // zAppLog.Info(vec.ToString() + dir.ToString());
 
             targetHead.transform.position = new Vector3(vec.x, vec.y - 0.1F, vec.z);
