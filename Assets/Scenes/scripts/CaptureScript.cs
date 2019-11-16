@@ -65,6 +65,7 @@ public class CaptureScript : MonoBehaviour {
 
 
     private void OnImageAvailableCallbackFunc(TextureReaderApi.ImageFormatType format, int width, int height, IntPtr pixelBuffer, int bufferSize) {
+        AppLog.Info("OnImageAvailableCallbackFunc");
         this.format = format;
         this.width = width;
         this.height = height;
@@ -74,7 +75,7 @@ public class CaptureScript : MonoBehaviour {
 
     public Texture2D FrameTexture {
         get {
-            AppLog.Info("FrameTexture " + bufferSize);
+            // AppLog.Info("FrameTexture " + bufferSize);
             if (bufferSize != 0) {
                 // TextureReaderが取得した画像データのポインタからデータを取得
                 byte[] data = new byte[bufferSize];
