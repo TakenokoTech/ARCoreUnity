@@ -124,7 +124,7 @@ namespace GoogleARCore.Examples.ComputerVision {
                 return;
             }
 
-            AppLog.Info("TextureReader. " + m_Command);
+            //AppLog.Info("TextureReader. " + m_Command);
             // Process command.
             switch (m_Command) {
                 case CommandType.Create: {
@@ -152,14 +152,14 @@ namespace GoogleARCore.Examples.ComputerVision {
                     }
 
                 case CommandType.ProcessNextFrame: {
-                        AppLog.Info("m_ImageBufferIndex: " + m_ImageBufferIndex);
+                        //AppLog.Info("m_ImageBufferIndex: " + m_ImageBufferIndex);
                         if (m_ImageBufferIndex >= 0) {
                             // Get image pixels from previously submitted request.
                             int bufferSize = 0;
                             IntPtr pixelBuffer =
                                 m_TextureReaderApi.AcquireFrame(m_ImageBufferIndex, ref bufferSize);
 
-                            AppLog.Info("pixelBuffer: " + (pixelBuffer != IntPtr.Zero) + ", " + bufferSize);
+                            //AppLog.Info("pixelBuffer: " + (pixelBuffer != IntPtr.Zero) + ", " + bufferSize);
                             if (pixelBuffer != IntPtr.Zero && OnImageAvailableCallback != null) {
                                 OnImageAvailableCallback(
                                     ImageFormat, ImageWidth, ImageHeight, pixelBuffer, bufferSize);
