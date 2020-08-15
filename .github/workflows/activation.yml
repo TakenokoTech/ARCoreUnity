@@ -1,6 +1,6 @@
 name: Activation
 
-on: [push]
+on: []
 
 jobs:
   activation:
