@@ -1,1 +1,2 @@
-model/
+model/**/*.vrm
+model/**/*.vrm.meta
