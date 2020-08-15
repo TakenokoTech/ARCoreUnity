@@ -1,4 +1,5 @@
 ﻿namespace Takenoko.Tech.AugmentedFaces {
+    using GoogleARCore.Examples.AugmentedFaces;
     using System;
     using System.Collections.Generic;
     using UnityEngine;
@@ -26,6 +27,8 @@
         public GameObject faceInclination;
 
         public GameObject noSignal;
+        readonly List<Vector3> vertices = new List<Vector3>();
+        readonly List<Vector3> normals = new List<Vector3>();
 
         private CharacterEntity entity = new CharacterEntity();
 
@@ -40,6 +43,14 @@
         void Update() {
             // AppLog.Info("Rendering.Update()"); -10, 180, -60
             try {
+
+                filter.AumgnetedFace.GetVertices(vertices);
+                filter.AumgnetedFace.GetNormals(normals);
+            }
+            catch (Exception e) {
+                // AppLog.Info(e.ToString());
+            }
+            try {
                 _UpdateMeshVerticesBall();
                 _UpdateMeshNormalsBall();
                 _CalcFacePosition();
@@ -51,8 +62,8 @@
         }
 
         private void _CalcFacePosition() {
-            Vector3 vec = filter.m_CenterPose.position;
-            Vector3 dir = filter.m_CenterPose.forward;
+            Vector3 vec = filter.AumgnetedFace.CenterPose.position;
+            Vector3 dir = filter.AumgnetedFace.CenterPose.forward;
             //vec = new Vector3(0.0F, 0.1F, 0.4F);
             //dir = new Vector3(-0.1F, -0.0F, 0.9F);
 
@@ -78,7 +89,7 @@
          * 顔のZ軸方向の回転を返却
          */
         private float _GetFaceInclination() {
-            if (filter.m_MeshVertices.Count == 0) return 0;
+            if (vertices.Count == 0) return 0;
 
             string name1 = PREFIX_VER + 10;
             Vector3 vecBall1 = m_BallDicVertices[name1].transform.TransformPoint(m_BallDicVertices[name1].transform.position);
@@ -99,7 +110,7 @@
          * 口の形を計算
          */
         private void _CalcMouthPosition() {
-            if (filter.m_MeshVertices.Count == 0) return;
+            if (vertices.Count == 0) return;
 
             float minV = 0.015F, maxV = 0.04F;
             Vector3 vecTop = m_BallDicVertices[PREFIX_VER + 12].transform.position;
@@ -137,7 +148,7 @@
          * メッシュを配置
          */
         private void _UpdateMeshVerticesBall() {
-            for (int i = 0; i < filter.m_MeshVertices.Count; i++) {
+            for (int i = 0; i < vertices.Count; i++) {
                 string name = PREFIX_VER + i;
                 if (!m_BallDicVertices.ContainsKey(name)) {
                     m_BallDicVertices[name] = Instantiate(pointObj) as GameObject; //GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -146,7 +157,7 @@
                     //m_BallDicVertices[name].GetComponent<Renderer>().material.color = Color.red;
                 }
                 m_BallDicVertices[name].name = name;
-                m_BallDicVertices[name].transform.localPosition = filter.m_MeshVertices[i];
+                m_BallDicVertices[name].transform.localPosition = vertices[i];
                 m_BallDicVertices[name].transform.localScale = new Vector3(scale, scale, scale);
                 m_BallDicVertices[name].transform.parent = parent.transform;
                 m_BallDicVertices[name].layer = gameObject.layer;
@@ -157,7 +168,7 @@
          * メッシュを配置
          */
         private void _UpdateMeshNormalsBall() {
-            for (int i = 0; i < filter.m_MeshNormals.Count; i++) {
+            for (int i = 0; i < normals.Count; i++) {
                 string name = PREFIX_DIC + i;
                 if (!m_BallDicNormals.ContainsKey(name)) {
                     m_BallDicNormals[name] = Instantiate(pointObj) as GameObject; //GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -166,7 +177,7 @@
                     //m_BallDicNormals[name].GetComponent<Renderer>().material.color = Color.green;
                 }
                 m_BallDicNormals[name].name = name;
-                m_BallDicNormals[name].transform.localPosition = filter.m_MeshNormals[i];
+                m_BallDicNormals[name].transform.localPosition = normals[i];
                 m_BallDicNormals[name].transform.localScale = new Vector3(scale, scale, scale);
                 m_BallDicNormals[name].transform.parent = parent.transform;
                 m_BallDicNormals[name].layer = gameObject.layer;
