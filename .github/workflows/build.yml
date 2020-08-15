@@ -34,7 +34,7 @@ jobs:
 
       # Build
       - name: Build project
-        uses: webbertakken/unity-builder@v1.1
+        uses: webbertakken/unity-builder@v1.0
         with:
           unityVersion: 2019.3.7f1
           targetPlatform: Android
